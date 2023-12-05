@@ -105,6 +105,7 @@ def main(args):
     num_agents = all_args.num_agents
 
     config_train = dict(
+        horizon=200,
         random_spawn_lane_index=False,
         start_seed=0,
         use_render=all_args.use_render,
@@ -138,6 +139,7 @@ def main(args):
     )
 
     config_eval = dict(
+        horizon=200,
         random_spawn_lane_index=False,
         start_seed=0,
         use_render=all_args.use_render_eval,

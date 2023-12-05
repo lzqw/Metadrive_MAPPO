@@ -447,7 +447,7 @@ def get_config():
     parser.add_argument(
         "--use_eval",
         action="store_true",
-        default=True,
+        default=False,
         help="by default, do not start evaluation. If set`, start evaluation alongside with training.",
     )
     parser.add_argument(
@@ -473,7 +473,7 @@ def get_config():
     parser.add_argument(
         "--use_render",
         action="store_true",
-        default=False,
+        default=True,
         help="by default, do not render the env during training. If set, start render. Note: something, the environment has internal render process which is not controlled by this hyperparam.",
     )
 
@@ -526,7 +526,7 @@ def get_config():
         straight=MultiAgentStraightEnv
     )
     parser.add_argument("--env", type=str, default="intersection", choices=list(envs.keys()))
-    parser.add_argument("--top_down", default=False,action="store_true")
+    parser.add_argument("--top_down", default=True,action="store_true")
     parser.add_argument("--num_agents", type=int,default=5)
     parser.add_argument(
         "--random_traffic",

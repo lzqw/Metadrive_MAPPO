@@ -43,19 +43,11 @@ class DummyVecEnv():
                 if env_done:
                     obs[i] = self.envs[i].reset()
             else:
-                if np.all(env_done):
+                if np.all(env_done) or self.envs[i].env.env.episode_step>=self.envs[i].env.env.config["horizon"]:
                     obs[i] = self.envs[i].reset()   # reset the env
-                # # Handle multi-agent environments
-                # for agent_index, agent_done in enumerate(env_done):
-                #     if agent_done:
-                #         # Check if the agent has reached its destination
-                #         if env_info[agent_index].get('arrive_dest'):
-                #             # Replace the data of the first agent that reached its destination with the new agent's data
-                #             pass
-                #         else:
-                #             # If the agent is done but hasn't reached its destination, reset the environment
-                #             obs[i] = self.envs[i].reset()
-                #             break  # Assuming the entire environment is reset
+                elif self.envs[i].env.need_reset:
+                    obs[i] = self.envs[i].reset()
+                    self.envs[i].env.need_reset=False
 
         self.actions = None
         # print("----->",dones)

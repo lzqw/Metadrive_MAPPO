@@ -37,6 +37,7 @@ class EnvCore(object):
         self.action_dim = list(self.env.action_space.values())[0].shape[0]
         self.action_space = list(self.env.action_space.values())
         self.observation_space=list(self.env.observation_space.values())
+        self.need_reset=False
 
 
 
@@ -73,6 +74,14 @@ class EnvCore(object):
                     # If the agent is done but hasn't reached its destination, reset the environment
                     # ref = my_env.reset()
                     break  # Assuming the entire environment is reset
+        if len(sub_agent_done)<self.agent_num:
+            sub_agent_done=np.append(sub_agent_done,False)  # If the agent is done but hasn't reached its destination, reset the environment
+            sub_agent_reward=np.append(sub_agent_reward,0)
+            sub_agent_obs=np.append(sub_agent_obs,sub_agent_obs[-1])
+            sub_agent_info=np.append(sub_agent_info,sub_agent_info[-1])
+            self.need_reset=True
+            print("Warning: Agent is done but hasn't reached its destination, reset the environment")
+
         # print(sub_agent_done, len(sub_agent_obs), len(sub_agent_reward), len(sub_agent_info))
         return [sub_agent_obs, sub_agent_reward, sub_agent_done, sub_agent_info]
 
@@ -84,9 +93,10 @@ if __name__=="__main__" :
     parser = argparse.ArgumentParser()
     parser.add_argument("--env", type=str, default="intersection", choices=list(envs.keys()))
     parser.add_argument("--top_down", action="store_true",default=True)
-    parser.add_argument("--num_agents", type=int,default=2)
+    parser.add_argument("--num_agents", type=int,default=5)
     args = parser.parse_args()
     config=dict(
+        horizon=200,
         use_render=True,
         crash_done= True,
         agent_policy=ManualControllableIDMPolicy,
@@ -110,7 +120,9 @@ if __name__=="__main__" :
     my_env.env.switch_to_third_person_view()  # Default is in Top-down view, we switch to Third-person view.
     while True:
         ref,r,done,info=my_env.step(action)
-        print(done)
-        if np.all(done):
-            my_env.reset()
+        print(len(done))
+        # print(my_env.env.episode_step,my_env.env.config["horizon"])
+        if np.all(done) or my_env.env.episode_step >= my_env.env.config["horizon"]:
+            ref = my_env.env.reset()  # reset the en
+        print(len(ref),len(done))# v
 
