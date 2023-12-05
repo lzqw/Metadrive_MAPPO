@@ -53,7 +53,7 @@ class EnvCore(object):
         sub_agent_obs=list(sub_agent_obs.values())
         sub_agent_reward=list(reward.values())
         sub_agent_done = list(done.values())[:-1]
-        sub_agent_info = list(info.values())
+        sub_agent_info=list(info.values())
         # print(sub_agent_done)
 
         new_agent_processed = False  # Flag to track if new agent's data is already used
@@ -75,12 +75,18 @@ class EnvCore(object):
                     # ref = my_env.reset()
                     break  # Assuming the entire environment is reset
         if len(sub_agent_done)<self.agent_num:
+            print("len(sub_agent_done)<self.agent_num",len(sub_agent_done),len(sub_agent_obs))
+        # print(reward)
+        while len(sub_agent_done)<self.agent_num:
             sub_agent_done=np.append(sub_agent_done,False)  # If the agent is done but hasn't reached its destination, reset the environment
             sub_agent_reward=np.append(sub_agent_reward,0)
-            sub_agent_obs=np.append(sub_agent_obs,sub_agent_obs[-1])
+            # sub_agent_obs=np.append(sub_agent_obs,sub_agent_obs[-1])
+            sub_agent_obs.append(sub_agent_obs[-1])
             sub_agent_info=np.append(sub_agent_info,sub_agent_info[-1])
             self.need_reset=True
+            print("processing:",len(sub_agent_done),len(sub_agent_obs))
             print("Warning: Agent is done but hasn't reached its destination, reset the environment")
+
 
         # print(sub_agent_done, len(sub_agent_obs), len(sub_agent_reward), len(sub_agent_info))
         return [sub_agent_obs, sub_agent_reward, sub_agent_done, sub_agent_info]
@@ -117,12 +123,11 @@ if __name__=="__main__" :
     my_env=EnvCore(args,config)
     my_env.reset()
     action=[np.zeros(2)+[0,1] for i in range(args.num_agents)]
-    my_env.env.switch_to_third_person_view()  # Default is in Top-down view, we switch to Third-person view.
+    my_env.env.switch_to_third_person_view()  # Default is in Top-down vwwwwwwwwiew, we switch to Third-person view.
     while True:
         ref,r,done,info=my_env.step(action)
-        print(len(done))
+        print(len(done),len(ref))
         # print(my_env.env.episode_step,my_env.env.config["horizon"])
         if np.all(done) or my_env.env.episode_step >= my_env.env.config["horizon"]:
             ref = my_env.env.reset()  # reset the en
-        print(len(ref),len(done))# v
 

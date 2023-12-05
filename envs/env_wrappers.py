@@ -50,6 +50,7 @@ class DummyVecEnv():
                     self.envs[i].env.need_reset=False
 
         self.actions = None
+        # print(obs.shape)
         # print("----->",dones)
         return obs, rews, dones, infos
 

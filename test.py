@@ -1,4 +1,4 @@
 import numpy as np
-a=[True,True,True,False,False,False,False,False,False,False]
-print(a)
-print(np.append(a,True)  )
+a=[np.array([1,2,3]),np.array([4,5,6])]
+a.append(a[-1])
+print(a  )
